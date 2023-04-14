@@ -126,14 +126,14 @@ distr_2021 <- read_ods(
   path = "data-raw/dtb_2021/dtb_2021.ods",
   sheet = "district"
 ) %>%
-  mutate(dtb = 2022) %>%
+  mutate(dtb = 2021) %>%
   relocate(dtb)
 
 subdistr_2021 <- read_ods(
   path = "data-raw/dtb_2021/dtb_2021.ods",
   sheet = "subdistrict"
 ) %>%
-  mutate(dtb = 2022) %>%
+  mutate(dtb = 2021) %>%
   relocate(dtb)
 
 dtb_2021 <- left_join(uf_2021, rgi1_2021) %>%
@@ -197,14 +197,14 @@ distr_2020 <- read_ods(
   path = "data-raw/dtb_2020/dtb_2020.ods",
   sheet = "district"
 ) %>%
-  mutate(dtb = 2022) %>%
+  mutate(dtb = 2020) %>%
   relocate(dtb)
 
 subdistr_2020 <- read_ods(
   path = "data-raw/dtb_2020/dtb_2020.ods",
   sheet = "subdistrict"
 ) %>%
-  mutate(dtb = 2022) %>%
+  mutate(dtb = 2020) %>%
   relocate(dtb)
 
 dtb_2020 <- left_join(uf_2020, rgi1_2020) %>%
@@ -268,14 +268,14 @@ distr_2019 <- read_ods(
   path = "data-raw/dtb_2019/dtb_2019.ods",
   sheet = "district"
 ) %>%
-  mutate(dtb = 2022) %>%
+  mutate(dtb = 2019) %>%
   relocate(dtb)
 
 subdistr_2019 <- read_ods(
   path = "data-raw/dtb_2019/dtb_2019.ods",
   sheet = "subdistrict"
 ) %>%
-  mutate(dtb = 2022) %>%
+  mutate(dtb = 2019) %>%
   relocate(dtb)
 
 dtb_2019 <- left_join(uf_2019, rgi1_2019) %>%
@@ -288,8 +288,66 @@ dtb_2019 <- left_join(uf_2019, rgi1_2019) %>%
 
 
 
+# DTB 2018 ----------------------------------------------------------------
+
+mun_2018 <- read_ods(
+  path = "data-raw/dtb_2018/dtb_2018.ods",
+  sheet = "municipality"
+) %>%
+  mutate(
+    code_meso = as.numeric(paste0(code_uf, code_meso)),
+    code_micro = as.numeric(paste0(code_uf, code_micro))
+  )
+
+uf_2018 <- mun_2018 %>%
+  select(code_uf, name_uf) %>%
+  distinct() %>%
+  mutate(dtb = 2018) %>%
+  relocate(dtb)
+
+meso_2018 <- mun_2018 %>%
+  select(code_uf, code_meso, name_meso) %>%
+  distinct() %>%
+  mutate(dtb = 2018) %>%
+  relocate(dtb)
+
+micro_2018 <- mun_2018 %>%
+  select(code_meso, code_micro, name_micro) %>%
+  distinct() %>%
+  mutate(dtb = 2018) %>%
+  relocate(dtb)
+
+muni_2018 <- mun_2018 %>%
+  select(code_micro, code_full_muni, name_muni) %>%
+  distinct() %>%
+  mutate(dtb = 2018) %>%
+  relocate(dtb) %>%
+  rename(code_muni = code_full_muni)
+
+distr_2018 <- read_ods(
+  path = "data-raw/dtb_2018/dtb_2018.ods",
+  sheet = "district"
+) %>%
+  mutate(dtb = 2018) %>%
+  relocate(dtb)
+
+subdistr_2018 <- read_ods(
+  path = "data-raw/dtb_2018/dtb_2018.ods",
+  sheet = "subdistrict"
+) %>%
+  mutate(dtb = 2018) %>%
+  relocate(dtb)
+
+dtb_2018 <- left_join(uf_2018, meso_2018) %>%
+  left_join(micro_2018, relationship = "many-to-many") %>%
+  left_join(muni_2018, relationship = "many-to-many") %>%
+  left_join(distr_2018, relationship = "many-to-many") %>%
+  left_join(subdistr_2018, relationship = "many-to-many")
+
+
+
 # Bind and export ---------------------------------------------------------
 
-dtb <- bind_rows(dtb_2022, dtb_2021, dtb_2020, dtb_2019)
+dtb <- bind_rows(dtb_2022, dtb_2021, dtb_2020, dtb_2019, dtb_2018)
 
 usethis::use_data(dtb, overwrite = TRUE, compress = "xz")
