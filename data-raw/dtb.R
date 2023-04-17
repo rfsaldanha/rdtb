@@ -517,9 +517,120 @@ dtb_2015 <- left_join(uf_2015, meso_2015) %>%
   left_join(subdistr_2015, relationship = "many-to-many")
 
 
+# DTB 2014 ----------------------------------------------------------------
+
+mun_2014 <- read_ods(
+  path = "data-raw/dtb_2014/dtb_2014.ods",
+  sheet = "municipality"
+) %>%
+  mutate(
+    code_meso = as.numeric(paste0(code_uf, code_meso)),
+    code_micro = as.numeric(paste0(code_uf, code_micro))
+  )
+
+uf_2014 <- mun_2014 %>%
+  select(code_uf, name_uf) %>%
+  distinct() %>%
+  mutate(dtb = 2014) %>%
+  relocate(dtb)
+
+meso_2014 <- mun_2014 %>%
+  select(code_uf, code_meso, name_meso) %>%
+  distinct() %>%
+  mutate(dtb = 2014) %>%
+  relocate(dtb)
+
+micro_2014 <- mun_2014 %>%
+  select(code_meso, code_micro, name_micro) %>%
+  distinct() %>%
+  mutate(dtb = 2014) %>%
+  relocate(dtb)
+
+muni_2014 <- mun_2014 %>%
+  select(code_micro, code_full_muni, name_muni) %>%
+  distinct() %>%
+  mutate(dtb = 2014) %>%
+  relocate(dtb) %>%
+  rename(code_muni = code_full_muni)
+
+distr_2014 <- read_ods(
+  path = "data-raw/dtb_2014/dtb_2014.ods",
+  sheet = "district"
+) %>%
+  mutate(dtb = 2014) %>%
+  relocate(dtb)
+
+subdistr_2014 <- read_ods(
+  path = "data-raw/dtb_2014/dtb_2014.ods",
+  sheet = "subdistrict"
+) %>%
+  mutate(dtb = 2014) %>%
+  relocate(dtb)
+
+dtb_2014 <- left_join(uf_2014, meso_2014) %>%
+  left_join(micro_2014, relationship = "many-to-many") %>%
+  left_join(muni_2014, relationship = "many-to-many") %>%
+  left_join(distr_2014, relationship = "many-to-many") %>%
+  left_join(subdistr_2014, relationship = "many-to-many")
+
+
+# DTB 2013 ----------------------------------------------------------------
+
+dtb_2013 <- read_ods(
+  path = "data-raw/dtb_2013/dtb_2013.ods",
+  sheet = "all"
+) %>%
+  mutate(
+    code_meso = as.numeric(paste0(code_uf, code_meso)),
+    code_micro = as.numeric(paste0(code_uf, code_micro)),
+    code_muni = as.numeric(paste0(code_uf, code_muni)),
+    code_distr = as.numeric(paste0(code_muni, code_distr)),
+    code_subdistr = as.numeric(paste0(code_distr, code_subdistr))
+  )
+
+
+# DTB 2012 ----------------------------------------------------------------
+
+dtb_2012 <- read_ods(
+  path = "data-raw/dtb_2012/dtb_2012.ods",
+  sheet = "municipality"
+) %>%
+  mutate(
+    code_meso = as.numeric(paste0(code_uf, code_meso)),
+    code_micro = as.numeric(paste0(code_uf, code_micro)),
+    code_muni = as.numeric(paste0(code_uf, code_muni))
+  )
+
+
+# DTB 2011 ----------------------------------------------------------------
+
+dtb_2011 <- read_ods(
+  path = "data-raw/dtb_2011/dtb_2011.ods",
+  sheet = "municipality"
+) %>%
+  mutate(
+    code_meso = as.numeric(paste0(code_uf, code_meso)),
+    code_micro = as.numeric(paste0(code_uf, code_micro)),
+    code_muni = as.numeric(paste0(code_uf, code_muni))
+  )
+
+
+# DTB 2010 ----------------------------------------------------------------
+
+dtb_2010 <- read_ods(
+  path = "data-raw/dtb_2010/dtb_2010.ods",
+  sheet = "municipality"
+) %>%
+  mutate(
+    code_meso = as.numeric(paste0(code_uf, code_meso)),
+    code_micro = as.numeric(paste0(code_uf, code_micro))
+  )
+
+
 # Bind and export ---------------------------------------------------------
 
 dtb <- bind_rows(dtb_2022, dtb_2021, dtb_2020, dtb_2019, dtb_2018,
-                 dtb_2017, dtb_2016, dtb_2015)
+                 dtb_2017, dtb_2016, dtb_2015, dtb_2014, dtb_2013,
+                 dtb_2012, dtb_2011, dtb_2010)
 
 usethis::use_data(dtb, overwrite = TRUE, compress = "xz")
