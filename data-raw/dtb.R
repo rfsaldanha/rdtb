@@ -1,7 +1,8 @@
 ## code to prepare `dtb` dataset goes here
 
+library(tidyverse)
 library(readODS)
-library(dplyr)
+
 
 # DTB 2022 ----------------------------------------------------------------
 
@@ -679,12 +680,97 @@ dtb_2006 <- read_ods(
   sheet = "all"
 )
 
+# DTB 2005 ----------------------------------------------------------------
+
+dtb_2005 <- read_ods(
+  path = "data-raw/dtb_2005/dtb_2005.ods",
+  sheet = "all"
+) %>%
+  mutate(
+    code_meso = as.numeric(paste0(code_uf, code_meso)),
+    code_micro = as.numeric(paste0(code_uf, code_micro)),
+    code_muni = as.numeric(paste0(code_uf, code_muni)),
+    code_distr = as.numeric(paste0(code_muni, code_distr)),
+    code_subdistr = as.numeric(paste0(code_distr, code_subdistr))
+  )
+
+
+# DTB 2004 ----------------------------------------------------------------
+
+mun_2004 <- read_ods(
+  path = "data-raw/dtb_2004/dtb_2004.ods",
+  sheet = "all"
+)
+
+dtb_2004 <- mun_2004 %>%
+  mutate(code = case_when(
+    level == "0002" ~ code_uf,
+    level == "0008" ~ as.numeric(paste0(code_uf, substr(code_muni, 0, 2))),
+    level == "0009" ~ as.numeric(paste0(code_uf, substr(code_muni, 0, 3))),
+    level == "0005" ~ as.numeric(paste0(code_uf, code_muni)),
+    level == "0006" ~ as.numeric(paste0(code_uf, code_muni, code_distr)),
+    level == "0007" ~ as.numeric(paste0(code_uf, code_muni, code_distr, code_subdistr))
+  ))
+
+for(rw in 1:nrow(dtb_2004)){
+  if(dtb_2004[rw, "level"] == "0002"){
+    name_uf <- dtb_2004[rw, "name"]
+  }
+
+  if(dtb_2004[rw, "level"] == "0008"){
+    code_meso <- as.numeric(paste0(dtb_2004[rw, "code_uf"], substr(dtb_2004[rw, "code_muni"], 0, 2)))
+    name_meso <- dtb_2004[rw, "name"]
+  }
+
+  if(dtb_2004[rw, "level"] == "0009"){
+    code_micro <- as.numeric(paste0(dtb_2004[rw, "code_uf"], substr(dtb_2004[rw, "code_muni"], 0, 3)))
+    name_micro <- dtb_2004[rw, "name"]
+  }
+
+  if(dtb_2004[rw, "level"] %in% c("0005", "0006", "0007")){
+    dtb_2004[rw, "name_uf"] <- name_uf
+    dtb_2004[rw, "code_meso"] <- code_meso
+    dtb_2004[rw, "name_meso"] <- name_meso
+    dtb_2004[rw, "code_micro"] <- code_micro
+    dtb_2004[rw, "name_micro"] <- name_micro
+  }
+
+}
+
+dtb_2004 <- dtb_2004 %>%
+  filter(!(level %in% c("0002", "0008", "0009"))) %>%
+  select(level, code_uf, name_uf, code_meso, name_meso, code_micro, name_micro, code, name)
+
+muni_2004 <- dtb_2004 %>%
+  filter(level == "0005") %>%
+  rename(code_muni = code, name_muni = name) %>%
+  select(-level)
+
+distr_2004 <- dtb_2004 %>%
+  filter(level == "0006") %>%
+  select(code_distr = code, name_distr = name) %>%
+  mutate(code_muni = as.numeric(substr(code_distr, 0, 7)))
+
+subdistr_2004 <- dtb_2004 %>%
+  filter(level == "0007") %>%
+  select(code_subdistr = code, name_subdistr = name) %>%
+  mutate(code_distr = as.numeric(substr(code_subdistr, 0, 9)))
+
+dtb_2004 <- left_join(muni_2004, distr_2004) %>%
+  left_join(subdistr_2004) %>%
+  mutate(dtb = 2004)
+
+
+
+
+
+
 
 # Bind and export ---------------------------------------------------------
 
 dtb <- bind_rows(dtb_2022, dtb_2021, dtb_2020, dtb_2019, dtb_2018,
                  dtb_2017, dtb_2016, dtb_2015, dtb_2014, dtb_2013,
                  dtb_2012, dtb_2011, dtb_2010, dtb_2009, dtb_2008,
-                 dtb_2007, dtb_2006)
+                 dtb_2007, dtb_2006, dtb_2005, dtb_2004)
 
 usethis::use_data(dtb, overwrite = TRUE, compress = "xz")
