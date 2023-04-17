@@ -641,10 +641,26 @@ dtb_2009 <- read_ods(
   )
 
 
+
+# DTB 2008 ----------------------------------------------------------------
+
+dtb_2008 <- read_ods(
+  path = "data-raw/dtb_2008/dtb_2008.ods",
+  sheet = "all"
+) %>%
+  mutate(
+    code_meso = as.numeric(paste0(code_uf, code_meso)),
+    code_micro = as.numeric(paste0(code_uf, code_micro)),
+    code_muni = as.numeric(paste0(code_uf, code_muni)),
+    code_distr = as.numeric(paste0(code_muni, code_distr)),
+    code_subdistr = as.numeric(paste0(code_distr, code_subdistr))
+  )
+
+
 # Bind and export ---------------------------------------------------------
 
 dtb <- bind_rows(dtb_2022, dtb_2021, dtb_2020, dtb_2019, dtb_2018,
                  dtb_2017, dtb_2016, dtb_2015, dtb_2014, dtb_2013,
-                 dtb_2012, dtb_2011, dtb_2010, dtb_2009)
+                 dtb_2012, dtb_2011, dtb_2010, dtb_2009, dtb_2008)
 
 usethis::use_data(dtb, overwrite = TRUE, compress = "xz")
