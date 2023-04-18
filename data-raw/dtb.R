@@ -874,6 +874,13 @@ prepare_dtb <- function(year){
     ) %>%
       mutate(dtb = 1980) %>%
       relocate(dtb)
+  } else if(dtb == 1970){
+    dtb <- read_ods(
+      path = "data-raw/dtb_1970/dtb_1970.ods",
+      sheet = "all"
+    ) %>%
+      mutate(dtb = 1970) %>%
+      relocate(dtb)
   }
 
 
@@ -891,7 +898,7 @@ prepare_dtb <- function(year){
 
 
 dtb  <- future_map_dfr(
-  c(1994, 2000, 2003:2022),
+  c(1970, 1980, 1994, 2000, 2003:2022),
   prepare_dtb,
   .options = furrr_options(seed = 123),
   .progress = TRUE
