@@ -727,6 +727,65 @@ prepare_dtb <- function(year){
         code_subdistr = as.numeric(paste0(code_distr, code_subdistr)),
         dtb = 2003
       )
+  } else if(dtb == 2000){
+    mun_2000 <- read_ods(
+      path = "data-raw/dtb_2000/dtb_2000.ods",
+      sheet = "all"
+    )
+
+    uf_2000 <- mun_2000 %>%
+      filter(level == 2) %>%
+      select(code_uf, name_uf = name)
+
+    meso_2000 <- mun_2000 %>%
+      filter(level == 8) %>%
+      select(code_uf, code_meso, name_meso = name) %>%
+      mutate(code_meso = as.numeric(paste0(code_uf, str_pad(string = code_meso, side = "left", pad = 0, width = 2))))
+
+    micro_2000 <- mun_2000 %>%
+      filter(level == 9) %>%
+      select(code_uf, code_meso, code_micro, name_micro = name) %>%
+      mutate(
+        code_meso = as.numeric(paste0(code_uf, str_pad(string = code_meso, side = "left", pad = 0, width = 2))),
+        code_micro = as.numeric(paste0(code_uf, str_pad(string = code_micro, side = "left", pad = 0, width = 3))),
+      ) %>%
+      select(-code_uf)
+
+    muni_2000 <- mun_2000 %>%
+      filter(level == 5) %>%
+      select(code_uf, code_micro, code_muni, name_muni = name) %>%
+      mutate(
+        code_micro = as.numeric(paste0(code_uf, str_pad(string = code_micro, side = "left", pad = 0, width = 3))),
+        code_muni = as.numeric(paste0(code_uf, str_pad(string = code_muni, side = "left", pad = 0, width = 5)))
+      ) %>%
+      select(-code_uf)
+
+    distr_2000 <- mun_2000 %>%
+      filter(level == 6) %>%
+      select(code_uf, code_muni, code_distr, name_distr = name) %>%
+      mutate(
+        code_muni = as.numeric(paste0(code_uf, str_pad(string = code_muni, side = "left", pad = 0, width = 5))),
+        code_distr = as.numeric(paste0(code_muni, str_pad(string = code_distr, side = "left", pad = 0, width = 2)))
+      ) %>%
+      select(-code_uf)
+
+    subdistr_2000 <- mun_2000 %>%
+      filter(level == 6) %>%
+      select(code_uf, code_muni, code_distr, code_subdistr, name_subdistr = name) %>%
+      mutate(
+        code_muni = as.numeric(paste0(code_uf, str_pad(string = code_muni, side = "left", pad = 0, width = 5))),
+        code_distr = as.numeric(paste0(code_muni, str_pad(string = code_distr, side = "left", pad = 0, width = 2))),
+        code_subdistr = as.numeric(paste0(code_distr, str_pad(string = code_subdistr, side = "left", pad = 0, width = 2)))
+      ) %>%
+      select(-code_uf, -code_muni)
+
+    dtb <- left_join(uf_2000, meso_2000) %>%
+      left_join(micro_2000) %>%
+      left_join(muni_2000) %>%
+      left_join(distr_2000) %>%
+      left_join(subdistr_2000) %>%
+      mutate(dtb = 2000) %>%
+      relocate(dtb)
   }
 
 
@@ -734,8 +793,14 @@ prepare_dtb <- function(year){
   return(dtb)
 }
 
+
+
+
+
+
+
 dtb  <- future_map_dfr(
-  2003:2022,
+  c(2000, 2003:2022),
   prepare_dtb,
   .options = furrr_options(seed = 123),
   .progress = TRUE
