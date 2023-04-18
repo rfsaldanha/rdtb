@@ -727,7 +727,7 @@ prepare_dtb <- function(year){
         code_subdistr = as.numeric(paste0(code_distr, code_subdistr)),
         dtb = 2003
       )
-  } else if(dtb == 2000){
+  } else if(year == 2000){
     mun_2000 <- read_ods(
       path = "data-raw/dtb_2000/dtb_2000.ods",
       sheet = "all"
@@ -786,7 +786,7 @@ prepare_dtb <- function(year){
       left_join(subdistr_2000) %>%
       mutate(dtb = 2000) %>%
       relocate(dtb)
-  } else if(dtb == 1994){
+  } else if(year == 1994){
     mun_1994 <- read_fwf(
       file = "data-raw/dtb_1994/DTB94BR.DAT",
       col_positions = fwf_widths(
@@ -867,35 +867,35 @@ prepare_dtb <- function(year){
       left_join(subdistr_1994) %>%
       mutate(dtb = 1994) %>%
       relocate(dtb)
-  } else if(dtb == 1980){
+  } else if(year == 1980){
     dtb <- read_ods(
       path = "data-raw/dtb_1980/dtb_1980.ods",
       sheet = "all"
     ) %>%
       mutate(dtb = 1980) %>%
       relocate(dtb)
-  } else if(dtb == 1970){
+  } else if(year == 1970){
     dtb <- read_ods(
       path = "data-raw/dtb_1970/dtb_1970.ods",
       sheet = "all"
     ) %>%
       mutate(dtb = 1970) %>%
       relocate(dtb)
-  } else if(dtb == 1960){
+  } else if(year == 1960){
     dtb <- read_ods(
       path = "data-raw/dtb_1960/dtb_1960.ods",
       sheet = "all"
     ) %>%
       mutate(dtb = 1960) %>%
       relocate(dtb)
-  } else if(dtb == 1950){
+  } else if(year == 1950){
     dtb <- read_ods(
       path = "data-raw/dtb_1950/dtb_1950.ods",
       sheet = "all"
     ) %>%
       mutate(dtb = 1950) %>%
       relocate(dtb)
-  } else if(dtb == 1940){
+  } else if(year == 1940){
     dtb <- read_ods(
       path = "data-raw/dtb_1940/dtb_1940.ods",
       sheet = "all"
