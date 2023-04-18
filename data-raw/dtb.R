@@ -919,7 +919,7 @@ prepare_dtb <- function(year){
 
 
 dtb  <- future_map_dfr(
-  c(1970, 1980, 1994, 2000, 2003:2022),
+  c(1940, 1950, 1960, 1970, 1980, 1994, 2000, 2003:2022),
   prepare_dtb,
   .options = furrr_options(seed = 123),
   .progress = TRUE
