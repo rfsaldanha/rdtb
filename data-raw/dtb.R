@@ -786,6 +786,87 @@ prepare_dtb <- function(year){
       left_join(subdistr_2000) %>%
       mutate(dtb = 2000) %>%
       relocate(dtb)
+  } else if(dtb == 1994){
+    mun_1994 <- read_fwf(
+      file = "data-raw/dtb_1994/DTB94BR.DAT",
+      col_positions = fwf_widths(
+        c(2,2,3,4,1,2,2,64),
+        c("code_uf", "code_meso","code_micro","code_muni",
+          "dv","code_distr","code_subdistr","name")
+      ),
+      col_types = c("cccccccc")
+    ) %>%
+      na.omit() %>%
+      mutate(level = case_when(
+        code_meso == "00" & code_micro == "000" & code_muni == "0000" & code_distr == "00" & code_subdistr == "00" ~ 2,
+        code_meso != "00" & code_micro == "000" & code_muni == "0000" & code_distr == "00" & code_subdistr == "00" ~ 8,
+        code_meso != "00" & code_micro != "000" & code_muni == "0000" & code_distr == "00" & code_subdistr == "00" ~ 9,
+        code_meso != "00" & code_micro != "000" & code_muni != "0000" & code_distr == "00" & code_subdistr == "00" ~ 5,
+        code_meso != "00" & code_micro != "000" & code_muni != "0000" & code_distr != "00" & code_subdistr == "00" ~ 6,
+        code_meso != "00" & code_micro != "000" & code_muni != "0000" & code_distr != "00" & code_subdistr != "00" ~ 7
+      ))
+
+    uf_1994 <- mun_1994 %>%
+      filter(level == 2) %>%
+      select(code_uf, name_uf = name) %>%
+      mutate(code_uf = as.numeric(code_uf))
+
+    meso_1994 <- mun_1994 %>%
+      filter(level == 8) %>%
+      select(code_uf, code_meso, name_meso = name) %>%
+      mutate(
+        code_uf = as.numeric(code_uf),
+        code_meso = as.numeric(paste0(code_uf, code_meso))
+      )
+
+    micro_1994 <- mun_1994 %>%
+      filter(level == 9) %>%
+      select(code_uf, code_meso, code_micro, name_micro = name) %>%
+      mutate(
+        code_uf = as.numeric(code_uf),
+        code_meso = as.numeric(paste0(code_uf, code_meso)),
+        code_micro = as.numeric(paste0(code_uf, code_micro))
+      ) %>%
+      select(-code_uf)
+
+    muni_1994 <- mun_1994 %>%
+      filter(level == 5) %>%
+      select(code_uf, code_micro, code_muni, dv, name_muni = name) %>%
+      mutate(
+        code_uf = as.numeric(code_uf),
+        code_micro = as.numeric(paste0(code_uf, code_micro)),
+        code_muni = as.numeric(paste0(code_uf, code_muni, dv))
+      ) %>%
+      select(-code_uf, -dv)
+
+    distr_1994 <- mun_1994 %>%
+      filter(level == 6) %>%
+      select(code_uf, code_muni, dv, code_distr, name_distr = name) %>%
+      mutate(
+        code_uf = as.numeric(code_uf),
+        code_muni = as.numeric(paste0(code_uf, code_muni, dv)),
+        code_distr = as.numeric(paste0(code_muni, code_distr))
+      ) %>%
+      select(-code_uf, -dv)
+
+    subdistr_1994 <- mun_1994 %>%
+      filter(level == 6) %>%
+      select(code_uf, code_muni, dv, code_distr, code_subdistr, name_distr = name) %>%
+      mutate(
+        code_uf = as.numeric(code_uf),
+        code_muni = as.numeric(paste0(code_uf, code_muni, dv)),
+        code_distr = as.numeric(paste0(code_muni, code_distr)),
+        code_subdistr = as.numeric(paste0(code_distr, code_subdistr))
+      ) %>%
+      select(-code_uf, -dv, -code_muni)
+
+    dtb <- left_join(uf_1994, meso_1994) %>%
+      left_join(micro_1994) %>%
+      left_join(muni_1994) %>%
+      left_join(distr_1994) %>%
+      left_join(subdistr_1994) %>%
+      mutate(dtb = 1994) %>%
+      relocate(dtb)
   }
 
 
@@ -799,8 +880,10 @@ prepare_dtb <- function(year){
 
 
 
+
+
 dtb  <- future_map_dfr(
-  c(2000, 2003:2022),
+  c(1994, 2000, 2003:2022),
   prepare_dtb,
   .options = furrr_options(seed = 123),
   .progress = TRUE

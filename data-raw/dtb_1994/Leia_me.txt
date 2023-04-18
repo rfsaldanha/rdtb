@@ -1,0 +1,133 @@
+Leia-me
+
+Divisão Territorial 1994 
+ Apresenta um conjunto de arquivos contendo a divisão territorial do Brasil 
+para 1994, por unidade da federação, mesorregião, microrregião, município, 
+distrito e subdistrito.
+
+Organização dos arquivos de dados
+
+	- Os registros são seqüenciais de tipo único, a nível de Subdistrito.
+	- Os registros estão ordenados segundo o código da Unidade da 
+          Federação, da Mesorregião, da Microrregião, do Município, do
+          Distrito e do Subdistrito. 
+	- O nome da unidade geográfica corresponde ao último campo de código
+          preenchido com valor significativo.
+
+Arquivos disponíveis
+
+arquivo                 bytes             descrição
+
+RONDONIA.ZIP             952     Divisão Territ.do Brasil - Rondônia
+ACRE.ZIP                 529     Divisão Territ.do Brasil - Acre
+AMAZONAS.ZIP           1,280     Divisão Territ.do Brasil - Amazonas
+RORAIMA.ZIP              308     Divisão Territ.do Brasil - Roraima
+PARA.ZIP               2,909     Divisão Territ.do Brasil - Pará
+AMAPA.ZIP                541     Divisão Territ.do Brasil - Amapá
+TOCANTINS.ZIP          2,034     Divisão Territ.do Brasil - Tocantins
+MARANHAO.ZIP           2,651     Divisão Territ.do Brasil - Maranhão
+PIAUI.ZIP              2,477     Divisão Territ.do Brasil - Piauí
+CEARA.ZIP              7,162     Divisão Territ.do Brasil - Ceará
+RIO_GRANDE_DO_NORTE    2,775     Divisão Territ.do Brasil - Rio G. do Norte
+PARAIBA.ZIP            3,490     Divisão Territ.do Brasil - Paraíba
+PERNAMBUCO.ZIP         4,471     Divisão Territ.do Brasil - Pernambuco
+ALAGOAS.ZIP            1,900     Divisão Territ.do Brasil - Alagoas
+SERGIPE.ZIP            1,445     Divisão Territ.do Brasil - Sergipe
+BAHIA.ZIP              8,841     Divisão Territ.do Brasil - Bahia
+MINAS_GERAIS.ZIP      17,153     Divisão Territ.do Brasil - Minas Gerais
+ESPIRITO_SANTO.ZIP     2,721     Divisão Territ.do Brasil - Espírito Santo
+RIO_DE_JANEIRO.ZIP     3,481     Divisão Territ.do Brasil - Rio de Janeiro
+SAO_PAULO.ZIP         12,050     Divisão Territ.do Brasil - São Paulo
+PARANA.ZIP             8,475     Divisão Territ.do Brasil - Paraná
+SANTA_CATARINA.ZIP     5,230     Divisão Territ.do Brasil - Santa Catarina
+RIO_GRANDE_DO_SUL.ZIP 11,327     Divisão Territ.do Brasil - Rio G. do Sul
+MATO_GROSSO_DO_SUL.ZIP 2,152     Divisão Territ.do Brasil - Mato G. do Sul
+MATO_GROSSO.ZIP        2,876     Divisão Territ.do Brasil - Mato Grosso
+GOIAS.ZIP              3,873     Divisão Territ.do Brasil - Goiás
+DISTRITO_FEDERAL.ZIP     338     Divisão Territ.do Brasil - Distrito Federal
+BRASIL.ZIP           104,219     Divisão Territorial para todo o Brasil
+
+
+4- Características físicas dos arquivos
+
+ARQUIVO	       REGISTROS  compactado BYTES	descompactado BYTES
+RONDONIA	    105	      952	          3.248
+ACRE	             52	      529	          1.534
+AMAZONAS	    161	    1.280	          4.490
+RORAIMA	             23	      308	            661
+PARA	            376	    2.909	         11.042
+AMAPA	             50	      541	          1.442
+TOCANTINS	    272	    2.034	          8.535
+MARANHAO	    336	    2.651	         10.103
+PIAUI	            321	    2.477	         10.191
+CEARA	            965	    7.162	         26.613
+RIO_GRANDE_DO_NORTE 360	    2.775	         10.730
+PARAIBA	            474	    3.490	         13.584
+PERNAMBUCO	    589	    4.471	         16.691
+ALAGOAS	            232	    1.900	          7.021
+SERGIPE	            175	    1.445	          5.319
+BAHIA	          1.231	    8.841	         34.746
+MINAS_GERAIS	  2.341	   17.153	         70.882
+ESPIRITO_SANTO	    322	    2.721	          9.592
+RIO_DE_JANEIRO	    411	    3.481	         12.193
+SAO_PAULO	  1.725	   12.050	         49.630
+PARANA	          1.150	    8.475	         34.339
+SANTA_CATARINA	    703	    5.230	         20.320
+RIO_GRANDE_DO_SUL 1.522	   11.327	         44.987
+MATO_GROSSO_DO_SUL  263     2.152	          7.572
+MATO_GROSSO	    358	    2.876	         10.799
+GOIAS	            551	    3.873	         16.307
+DISTRITO_FEDERAL     24       338	            681
+BRASIL	         15.092	  104.219             	443.227
+
+
+5- Layout dos registros
+
+POSIÇÃO INICIAL (BYTE)	TAMANHO (BYTES)	FORMATO	CONTEÚDO
+01	02	CHAR	Código da UF
+03	02	CHAR	Código da Mesorregião
+05	03	CHAR	Código da Microrregião
+08	04	CHAR	Código do Município
+12	01	CHAR	DV
+13 	02	CHAR	Código do Distrito
+15	02	CHAR	Código do Subdistrito
+17	64	CHAR	Nome da Unidade Geográfica
+
+		Nomenclatura:   N   Þ    Numérico
+		 	            CHARÞ    Alfanumérico
+
+
+6- Tradutor de Códigos da Unidade da Federação
+
+
+
+CÓDIGO DA UF	NOME DA UF
+11	RONDÔNIA
+12	ACRE
+13	AMAZONAS
+14	RORAIMA
+15	PARÁ
+16	AMAPÁ
+17	TOCANTINS
+21	MARANHÃO
+22	PIAUÍ
+23	CEARÁ
+24	RIO GRANDE DO NORTE
+25	PARAÍBA
+26	PERNAMBUCO
+27	ALAGOAS
+28	SERGIPE
+29	BAHIA
+31	BAHIA
+32	ESPÍRITO SANTO
+33	RIO DE JANEIRO
+35	SÃO PAULO
+41	PARANÁ
+42	SANTA CATARINA
+43	RIO GRANDE DO SUL
+50	MATO GROSSO
+51	MATO GROSSO DO SUL
+52	GOIÁS
+53	DISTRITO FEDERAL
+
+
