@@ -888,6 +888,20 @@ prepare_dtb <- function(year){
     ) %>%
       mutate(dtb = 1960) %>%
       relocate(dtb)
+  } else if(dtb == 1950){
+    dtb <- read_ods(
+      path = "data-raw/dtb_1950/dtb_1950.ods",
+      sheet = "all"
+    ) %>%
+      mutate(dtb = 1950) %>%
+      relocate(dtb)
+  } else if(dtb == 1940){
+    dtb <- read_ods(
+      path = "data-raw/dtb_1940/dtb_1940.ods",
+      sheet = "all"
+    ) %>%
+      mutate(dtb = 1940) %>%
+      relocate(dtb)
   }
 
 
