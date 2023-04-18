@@ -867,12 +867,20 @@ prepare_dtb <- function(year){
       left_join(subdistr_1994) %>%
       mutate(dtb = 1994) %>%
       relocate(dtb)
+  } else if(dtb == 1980){
+    dtb <- read_ods(
+      path = "data-raw/dtb_1980/dtb_1980.ods",
+      sheet = "all"
+    ) %>%
+      mutate(dtb = 1980) %>%
+      relocate(dtb)
   }
 
 
 
   return(dtb)
 }
+
 
 
 
