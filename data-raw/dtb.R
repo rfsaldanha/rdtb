@@ -926,6 +926,7 @@ dtb  <- future_map_dfr(
 ) %>%
   select(dtb, code_uf, name_uf, code_rgi1, name_rgi1, code_rgi2, name_rgi2,
          code_meso, name_meso, code_micro, name_micro, code_muni, name_muni,
-         code_distr, name_distr, code_subdistr, name_subdistr)
+         code_distr, name_distr, code_subdistr, name_subdistr) %>%
+  as_tibble()
 
 usethis::use_data(dtb, overwrite = TRUE, compress = "xz")
