@@ -24,12 +24,6 @@ geo_mun2001 <- read_municipality(year = 2001) %>%
   distinct(code_muni, .keep_all = TRUE) %>%
   mutate(source = "geo")
 
-dtb_mun2001 <- dtb %>%
-  filter(dtb == 2001) %>%
-  select(code_muni, name_muni) %>%
-  distinct() %>%
-  mutate(source = "dtb")
-
 
 
 
